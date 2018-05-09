@@ -33,6 +33,7 @@ bool isHex(char *number);
 void deleteSysNumber(struct SysNumber number);
 void deleteSysNumbers(struct SysNumber *number, int len);
 void setDataType(struct SysNumber *number, int type);
+
 struct SysNumber createBinaryNumber();
 struct SysNumber _createBinaryNumber(long decVal);
 struct SysNumber createOctaNumber();
@@ -41,6 +42,8 @@ struct SysNumber createDecNumber();
 struct SysNumber _createDecNumber(long decVal);
 struct SysNumber createHexNumber();
 struct SysNumber _createHexNumber(long decVal);
+struct SysNumber createSysNumFactory(long decVal, int radix);
+
 struct SysNumber toDecimal(struct SysNumber number);
 long getDecValue(struct SysNumber number);
 struct SysNumber* setValue(struct SysNumber *number, char *value);
@@ -53,6 +56,7 @@ long convertDecimalToOctal(long decimalNumber);
 long convertOctalToDecimal(long octalNumber);
 long convertHextoDec(char *hex);
 char* convertDectoHex(long decimal);
+struct SysNumber convertSysNumber(struct SysNumber number, int radix);
 //long convertBinarytoOctal(long long binary);
 //long long convertOctalToBinary(long octalNumber);
 
@@ -61,10 +65,11 @@ void xuatDay(struct SysNumber *arrNumber, int len);
 int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber);
 void putAll(struct SysNumber *number[], int lenOuter, int lenIner);
 void phepToan(struct SysNumber *number[], int lenOuter, int lenIner);
-long plus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB);
-long sub(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB);
-long multi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB);
-long divi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB);
+struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+struct SysNumber* arrPlus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB, int redixResult);
+struct SysNumber sub(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
 long sum(struct SysNumber *number, int len);
 
 int menu1();

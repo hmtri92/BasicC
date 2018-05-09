@@ -206,6 +206,23 @@ struct SysNumber _createHexNumber(long decVal)
     return number;
 };
 
+struct SysNumber createSysNumFactory(long decVal, int radix)
+{
+    switch (radix)
+    {
+    case BINARY:
+      return _createBinaryNumber(decVal);
+    case OCTA:
+      return _createOctaNumber(decVal);
+    case DECIMAL:
+      return _createDecNumber(decVal);
+    case HEX:
+      return _createHexNumber(decVal);
+    }
+
+    return createDecNumber();
+};
+
 struct SysNumber toDecimal(struct SysNumber number)
 {
     if (number.dataType == DECIMAL)
@@ -376,6 +393,13 @@ long convertHextoDec(char *hex)
   return decimal;
 }
 
+// TODO
+struct SysNumber convertSysNumber(struct SysNumber number, int radix)
+{
+    long decVal = getDecValue(number);
+    return createSysNumFactory(decVal, radix);
+};
+
 char* convertDectoHex(long decimal)
 {
   char HEXVALUE[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -485,100 +509,104 @@ void putAll(struct SysNumber *number[], int lenOuter, int lenIner)
 void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
 {
     int pheptoan, a = 0, b = 0, c = 0;
-    long resultMath;
     struct SysNumber resultNum;
+    struct SysNumber *arrMath;
 
     pheptoan = menuPhepToan();
     menuChonHeso(&a, &b, &c);
-    printf("%d ", a);
-    printf("%d ", b);
-    printf("%d\n", c);
 
     // math
     switch (pheptoan)
     {
     case 1:
         // +
-        resultMath = plus(number[a-1], lenIner, number[b-1], lenIner);
+        arrMath = arrPlus(number[a-1], lenIner, number[b-1], lenIner, c);
         break;
     case 2:
         // -
-        resultMath = sub(number[a-1], lenIner, number[b-1], lenIner);
+
         break;
     case 3:
         // *
-        resultMath = multi(number[a-1], lenIner, number[b-1], lenIner);
+
         break;
     case 4:
         // /
-        resultMath = divi(number[a-1], lenIner, number[b-1], lenIner);
+
         break;
     };
-
-    // convert to system number
-    switch (c)
-    {
-    case 1:
-        // binary
-        resultNum = _createBinaryNumber(resultMath);
-        break;
-    case 2:
-        // octa
-        resultNum = _createOctaNumber(resultMath);
-        break;
-    case 3:
-        //dec
-        resultNum = _createDecNumber(resultMath);
-        break;
-    case 4:
-        //dex
-        resultNum = _createHexNumber(resultMath);
-        break;
-
-    }
 
     printf("\nKet qua phep toan = ");
     putSysNumber(resultNum);
 }
 
-long plus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
 {
-    long valA, valB;
-    valA = sum(numberA, lenA);
-    valB = sum(numberB, lenB);
+    struct SysNumber result;
+    long decVal;
+    decVal = getDecValue(numberA) + getDecValue(numberB);
 
-    return valA + valB;
+    result = createSysNumFactory(decVal, radixResult);
+
+    return result;
 }
 
-long sub(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+struct SysNumber* arrPlus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB, int redixResult)
 {
-    long valA, valB;
-    valA = sum(numberA, lenA);
-    valB = sum(numberB, lenB);
-
-    return valA - valB;
-}
-long multi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
-{
-    long valA, valB;
-    valA = sum(numberA, lenA);
-    valB = sum(numberB, lenB);
-
-    return valA * valB;
-}
-
-long divi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
-{
-    long valA, valB;
-    valA = sum(numberA, lenA);
-    valB = sum(numberB, lenB);
-    if (valB == 0)
+    if (lenA <= lenB)
     {
-        printf("\nKhong the thuc hien phep chia, tong gia tri trong day bang 0");
-        return 0;
+        struct SysNumber arrResult[lenA + 1];
+        int index = 0;
+        for (index = 0; index < lenA; index++)
+        {
+            arrResult[index] = plus(numberA[index], numberB[index], redixResult);
+        }
+        while (index < lenB)
+        {
+            arrResult[index++] = convertSysNumber(numberB[index], redixResult);
+        }
+        return arrResult;
+    } else {
+        return arrPlus(numberB, lenB, numberA, lenA, redixResult);
     }
 
-    return valA / valB;
+};
+
+struct SysNumber sub(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
+{
+    struct SysNumber result;
+    long decVal;
+    decVal = getDecValue(numberA) - getDecValue(numberB);
+
+    result = createSysNumFactory(decVal, radixResult);
+
+    return result;
+}
+
+struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
+{
+    struct SysNumber result;
+    long decVal;
+    decVal = getDecValue(numberA) * getDecValue(numberB);
+
+    result = createSysNumFactory(decVal, radixResult);
+
+    return result;
+}
+
+struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
+{
+    struct SysNumber result;
+    long decVal, decB;
+    decB = getDecValue(numberB);
+    if (decB == 0) {
+        printf("\nKhong the thuc hien phep chia, tong gia tri trong day bang 0");
+        return createSysNumFactory(0, radixResult);
+    }
+    decVal = getDecValue(numberA) * decB;
+    result = createSysNumFactory(decVal, radixResult);
+
+    return result;
 }
 
 long sum(struct SysNumber *number, int len)
@@ -643,7 +671,8 @@ void menuChonHeso(int *a, int *b, int *c)
         scanf("%d%d%d", &aa, &bb, &cc);
     } while ((aa<1 || aa>4) || (bb<1 || bb>4) || (cc<1 || cc>4));
 
+    int mapSysVal[4] = {BINARY, OCTA, DECIMAL, HEX};
     *a = aa;
     *b = bb;
-    *c = cc;
+    *c = mapSysVal[cc-1];
 }
