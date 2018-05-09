@@ -9,13 +9,19 @@ int main(void) {
     do
     {
         chose = menu1();
+        if (chose == 6)
+        {
+            break;
+        }
 
         switch (chose)
         {
         case 1:
+            // nhap day
             len = getAll(binNumber, octNumber, decNumber, hexNumber);
             break;
         case 2:
+            // xuat day
             arrOut[0] = binNumber;
             arrOut[1] = octNumber;
             arrOut[2] = decNumber;
@@ -23,6 +29,7 @@ int main(void) {
             putAll(arrOut, 4, len);
             break;
         case 3:
+            // thuc hien phep toan
             arrOut[0] = binNumber;
             arrOut[1] = octNumber;
             arrOut[2] = decNumber;
@@ -32,9 +39,6 @@ int main(void) {
         case 4:
             break;
         case 5:
-            break;
-        case 6:
-            // nothing
             break;
         };
 

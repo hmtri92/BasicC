@@ -145,6 +145,15 @@ struct SysNumber createBinaryNumber()
   return sysNumber;
 }
 
+struct SysNumber _createBinaryNumber(long decVal)
+{
+    struct SysNumber number = createBinaryNumber();
+    char *binary = convertDecimalToBinary(decVal);
+    setValue(&number, binary);
+
+    return number;
+};
+
 struct SysNumber createOctaNumber()
 {
   struct SysNumber sysNumber;
@@ -152,6 +161,15 @@ struct SysNumber createOctaNumber()
 
   return sysNumber;
 }
+
+struct SysNumber _createOctaNumber(long decVal)
+{
+    struct SysNumber number = createOctaNumber();
+    char *octa = convertDecimalToOctal(decVal);
+    setValue(&number, octa);
+
+    return number;
+};
 
 struct SysNumber createDecNumber()
 {
@@ -161,6 +179,16 @@ struct SysNumber createDecNumber()
   return sysNumber;
 }
 
+struct SysNumber _createDecNumber(long decVal)
+{
+    struct SysNumber number = createDecNumber();
+    char *octa = (char*) malloc(countDigits(decVal) + 1);
+    ltoa(decVal, octa, DECIMAL);
+    setValue(&number, octa);
+
+    return number;
+};
+
 struct SysNumber createHexNumber()
 {
   struct SysNumber sysNumber;
@@ -169,32 +197,60 @@ struct SysNumber createHexNumber()
   return sysNumber;
 }
 
+struct SysNumber _createHexNumber(long decVal)
+{
+    struct SysNumber number = createHexNumber();
+    char *octa = convertDectoHex(decVal);
+    setValue(&number, octa);
+
+    return number;
+};
+
 struct SysNumber toDecimal(struct SysNumber number)
 {
-  struct SysNumber result = number;
-  long dec_val = 0;
-  int size;
+    if (number.dataType == DECIMAL)
+    {
+        return number;
+    }
 
-  if (number.dataType == BINARY) {
+    struct SysNumber result = number;
+    long dec_val = 0;
+    int size;
+
+    if (number.dataType == BINARY) {
     dec_val = convertBinaryToDecimal(number.digits);
-  } else if (number.dataType == OCTA) {
+    } else if (number.dataType == OCTA) {
     dec_val = convertOctalToDecimal(atol(number.digits));
-  } else if (number.dataType == HEX) {
+    } else if (number.dataType == HEX) {
     dec_val = convertHextoDec(number.digits);
-  }
+    }
 
-  size = countDigits(dec_val);
-  result.digits = (char*) malloc(size + 1);
-  ltoa(dec_val, result.digits, DECIMAL);
-  result.dataType = DECIMAL;
+    size = countDigits(dec_val);
+    result.digits = (char*) malloc(size + 1);
+    ltoa(dec_val, result.digits, DECIMAL);
+    result.dataType = DECIMAL;
 
-  return result;
+    return result;
 }
 
 long getDecValue(struct SysNumber number)
 {
   number = toDecimal(number);
   return atol(number.digits);
+}
+
+struct SysNumber* setValue(struct SysNumber *number, char *value)
+{
+    int length = strlen(value);
+    number->digits = (char*) malloc(length + 1);
+    if (number->digits == NULL)
+    {
+      printf("\nCan not allocate memory\n");
+      return false;
+    }
+    strcpy(number->digits, value);
+
+    return number;
 }
 
 int countDigits(long value)
@@ -426,6 +482,118 @@ void putAll(struct SysNumber *number[], int lenOuter, int lenIner)
     }
 }
 
+void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
+{
+    int pheptoan, a = 0, b = 0, c = 0;
+    long resultMath;
+    struct SysNumber resultNum;
+
+    pheptoan = menuPhepToan();
+    menuChonHeso(&a, &b, &c);
+    printf("%d ", a);
+    printf("%d ", b);
+    printf("%d\n", c);
+
+    // math
+    switch (pheptoan)
+    {
+    case 1:
+        // +
+        resultMath = plus(number[a-1], lenIner, number[b-1], lenIner);
+        break;
+    case 2:
+        // -
+        resultMath = sub(number[a-1], lenIner, number[b-1], lenIner);
+        break;
+    case 3:
+        // *
+        resultMath = multi(number[a-1], lenIner, number[b-1], lenIner);
+        break;
+    case 4:
+        // /
+        resultMath = divi(number[a-1], lenIner, number[b-1], lenIner);
+        break;
+    };
+
+    // convert to system number
+    switch (c)
+    {
+    case 1:
+        // binary
+        resultNum = _createBinaryNumber(resultMath);
+        break;
+    case 2:
+        // octa
+        resultNum = _createOctaNumber(resultMath);
+        break;
+    case 3:
+        //dec
+        resultNum = _createDecNumber(resultMath);
+        break;
+    case 4:
+        //dex
+        resultNum = _createHexNumber(resultMath);
+        break;
+
+    }
+
+    printf("\nKet qua phep toan = ");
+    putSysNumber(resultNum);
+}
+
+long plus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+{
+    long valA, valB;
+    valA = sum(numberA, lenA);
+    valB = sum(numberB, lenB);
+
+    return valA + valB;
+}
+
+long sub(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+{
+    long valA, valB;
+    valA = sum(numberA, lenA);
+    valB = sum(numberB, lenB);
+
+    return valA - valB;
+}
+long multi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+{
+    long valA, valB;
+    valA = sum(numberA, lenA);
+    valB = sum(numberB, lenB);
+
+    return valA * valB;
+}
+
+long divi(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB)
+{
+    long valA, valB;
+    valA = sum(numberA, lenA);
+    valB = sum(numberB, lenB);
+    if (valB == 0)
+    {
+        printf("\nKhong the thuc hien phep chia, tong gia tri trong day bang 0");
+        return 0;
+    }
+
+    return valA / valB;
+}
+
+long sum(struct SysNumber *number, int len)
+{
+    long result = 0;
+    for (int i = 0; i < len; i++)
+    {
+        result += getDecValue(number[i]);
+    }
+
+    return result;
+}
+
+//=================
+
 int menu1()
 {
     int choose;
@@ -450,20 +618,32 @@ int menuPhepToan()
     int choose;
     system("cls");
     printf("\n--- Chon phep toan ---\n");
-    printf(" 1. Cong(+)\n");
-    printf(" 2. Tru(-)\n");
-    printf(" 3. Nhan(*)\n");
-    printf(" 4. Chia(/)\n");
+    printf(" 1. Cong (c = a + b)\n");
+    printf(" 2. Tru (c = a - b)\n");
+    printf(" 3. Nhan (c = a * b)\n");
+    printf(" 4. Chia (c = a / b)\n");
     printf(" 5. Quay lai (<--)\n");
 
     do {
     scanf("%d", &choose);
-    } while (choose <= 0 || choose > 5);
+    } while (choose < 1 || choose > 5);
     return choose;
 }
 
-void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
+void menuChonHeso(int *a, int *b, int *c)
 {
-    int pheptoan;
-    pheptoan = menuPhepToan();
+    int aa, bb, cc;
+    printf("\n 1. Nhi phan");
+    printf("\n 2. Bat phan");
+    printf("\n 3. Thap phan");
+    printf("\n 4. Thap luc phan");
+    printf("\n Chon he so cho a, b, c cach nhau khoang trang (c = a [+-*/] b): ");
+
+    do {
+        scanf("%d%d%d", &aa, &bb, &cc);
+    } while ((aa<1 || aa>4) || (bb<1 || bb>4) || (cc<1 || cc>4));
+
+    *a = aa;
+    *b = bb;
+    *c = cc;
 }
