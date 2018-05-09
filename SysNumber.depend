@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1525770661 source:d:\workspace\sysnumber\main.c
+	"number.h"
+
+1525834909 d:\workspace\sysnumber\number.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<ctype.h>
+	<stdbool.h>
+	<conio.h>
+
+1525834851 source:d:\workspace\sysnumber\number.c
+	"number.h"
+
