@@ -57,22 +57,26 @@ long convertOctalToDecimal(long octalNumber);
 long convertHextoDec(char *hex);
 char* convertDectoHex(long decimal);
 struct SysNumber convertSysNumber(struct SysNumber number, int radix);
-//long convertBinarytoOctal(long long binary);
-//long long convertOctalToBinary(long octalNumber);
 
 void nhapDay(struct SysNumber *arrNumber, int len, struct SysNumber (*creater)());
 void xuatDay(struct SysNumber *arrNumber, int len);
+struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+int arrPlus(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult);
+struct SysNumber sub(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+int arrSub(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult);
+struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+int arrMulti(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult);
+struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
+int arrDivi(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult);
+long sum(struct SysNumber *number, int len);
+
 int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber);
 void putAll(struct SysNumber *number[], int lenOuter, int lenIner);
 void phepToan(struct SysNumber *number[], int lenOuter, int lenIner);
-struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
-struct SysNumber* arrPlus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB, int redixResult);
-struct SysNumber sub(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
-struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
-struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
-long sum(struct SysNumber *number, int len);
+void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner);
 
 int menu1();
 int menuPhepToan();
 void menuChonHeso(int *a, int *b, int *c);
+void menuChuyenHeDem(int *input, int *output);
 

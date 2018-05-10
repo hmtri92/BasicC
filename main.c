@@ -37,12 +37,19 @@ int main(void) {
             phepToan(arrOut, 4, len);
             break;
         case 4:
+            arrOut[0] = binNumber;
+            arrOut[1] = octNumber;
+            arrOut[2] = decNumber;
+            arrOut[3] = hexNumber;
+            chuyenDoiHeSo(arrOut, 4, len);
             break;
         case 5:
             break;
         };
 
-        printf("\nPress ESC to STOP.\nPress any key to continue.\n");
+        printf("\n-------------------");
+        printf("\nPress ESC to STOP.\nPress any key to continue.");
+        printf("\n-------------------\n");
         fflush(stdin);
         state = getch();
     } while (state != ESC);

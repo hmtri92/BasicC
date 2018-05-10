@@ -15,6 +15,8 @@ bool getSysNumber(struct SysNumber *number)
   if (MAX_DEGITS <= length) {
     printf("Out of memory.");
     return false;
+  } else if (length <= 0) {
+      return false;
   }
 
   // check data input
@@ -165,7 +167,9 @@ struct SysNumber createOctaNumber()
 struct SysNumber _createOctaNumber(long decVal)
 {
     struct SysNumber number = createOctaNumber();
-    char *octa = convertDecimalToOctal(decVal);
+    long valOcta = convertDecimalToOctal(decVal);
+    char *octa = (char*) malloc(countDigits(valOcta) + 1);
+    ltoa(valOcta, octa, OCTA);
     setValue(&number, octa);
 
     return number;
@@ -420,18 +424,6 @@ char* convertDectoHex(long decimal)
   return hex;
 }
 
-/*long convertBinarytoOctal(long long binary)
-{
-	long decimalNumber = convertBinaryToDecimal(binary);
-	return convertDecimalToOctal(decimalNumber);
-}
-
-long long convertOctalToBinary(long octalNumber)
-{
-    long decimalNumber = convertOctalToDecimal(octalNumber);
-    return convertDecimalToBinary(decimalNumber);
-}*/
-
 //============
 
 void nhapDay(struct SysNumber *arrNumber, int len, struct SysNumber (*creater)())
@@ -510,7 +502,8 @@ void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
 {
     int pheptoan, a = 0, b = 0, c = 0;
     struct SysNumber resultNum;
-    struct SysNumber *arrMath;
+    struct SysNumber arrMath[lenIner];
+    int lenResult = 0;
 
     pheptoan = menuPhepToan();
     menuChonHeso(&a, &b, &c);
@@ -520,24 +513,24 @@ void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
     {
     case 1:
         // +
-        arrMath = arrPlus(number[a-1], lenIner, number[b-1], lenIner, c);
+        lenResult = arrPlus(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
         break;
     case 2:
         // -
-
+        lenResult = arrSub(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
         break;
     case 3:
         // *
-
+        lenResult = arrMulti(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
         break;
     case 4:
         // /
-
+        lenResult = arrDivi(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
         break;
     };
 
-    printf("\nKet qua phep toan = ");
-    putSysNumber(resultNum);
+    printf("\nKet qua phep toan: ");
+    xuatDay(arrMath, lenResult);
 }
 
 struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
@@ -551,23 +544,26 @@ struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int ra
     return result;
 }
 
-struct SysNumber* arrPlus(struct SysNumber *numberA, int lenA, struct SysNumber *numberB, int lenB, int redixResult)
+/*
+    arrC[i] = arrA[i] + arrB[i];
+*/
+int arrPlus(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult)
 {
     if (lenA <= lenB)
     {
-        struct SysNumber arrResult[lenA + 1];
         int index = 0;
-        for (index = 0; index < lenA; index++)
+        while (index < lenA)
         {
-            arrResult[index] = plus(numberA[index], numberB[index], redixResult);
+            arrC[index] = plus(arrA[index], arrB[index], radixResult);
+            index++;
         }
         while (index < lenB)
         {
-            arrResult[index++] = convertSysNumber(numberB[index], redixResult);
+            arrC[index++] = convertSysNumber(arrB[index], radixResult);
         }
-        return arrResult;
+        return lenB;
     } else {
-        return arrPlus(numberB, lenB, numberA, lenA, redixResult);
+        return arrPlus(arrB, lenB, arrA, lenA, arrC, radixResult);
     }
 
 };
@@ -583,6 +579,41 @@ struct SysNumber sub(struct SysNumber numberA, struct SysNumber numberB, int rad
     return result;
 }
 
+/*
+    arrC[i] = arrA[i] - arrB[i];
+*/
+int arrSub(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult)
+{
+    if (lenA < lenB) {
+        int index = 0;
+        while (index < lenA)
+        {
+            arrC[index] = sub(arrA[index], arrB[index], radixResult);
+            index++;
+        }
+        while (index < lenB)
+        {
+            arrC[index++] = sub(createSysNumFactory(0, DECIMAL), arrB[index], radixResult);
+        }
+
+        return lenB;
+    } else {
+        // process lenA >= lenB
+        int index = 0;
+        while (index < lenB)
+        {
+            arrC[index] = sub(arrA[index], arrB[index], radixResult);
+            index++;
+        }
+        while (index < lenA)
+        {
+            arrC[index++] = convertSysNumber(arrA[index], radixResult);
+        }
+        return lenA;
+    }
+
+};
+
 struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
 {
     struct SysNumber result;
@@ -593,6 +624,30 @@ struct SysNumber multi(struct SysNumber numberA, struct SysNumber numberB, int r
 
     return result;
 }
+
+/*
+    arrC[i] = arrA[i] / arrB[i];
+*/
+int arrMulti(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult)
+{
+    if (lenA <= lenB)
+    {
+        int index = 0;
+        while (index < lenA)
+        {
+            arrC[index] = multi(arrA[index], arrB[index], radixResult);
+            index++;
+        }
+        while (index < lenB)
+        {
+            arrC[index++] = createSysNumFactory(0, radixResult);
+        }
+        return lenB;
+    } else {
+        return arrMulti(arrB, lenB, arrA, lenA, arrC, radixResult);
+    }
+
+};
 
 struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
 {
@@ -609,6 +664,36 @@ struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int ra
     return result;
 }
 
+/*
+    arrC[i] = arrA[i] - arrB[i];
+*/
+int arrDivi(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult)
+{
+    if (lenA > lenB) {
+        printf("\nOnly process &d numbers because length of A array than B array.", lenA);
+        int index = 0;
+        while (index < lenB)
+        {
+            arrC[index] = divi(arrA[index], arrB[index], radixResult);
+            index++;
+        }
+        return lenB;
+    } else {
+        //lenA <= lenB
+        int index = 0;
+        while (index < lenA)
+        {
+            arrC[index] = divi(arrA[index], arrB[index], radixResult);
+            index++;
+        }
+        while (index < lenB)
+        {
+            arrC[index++] = createSysNumFactory(0, radixResult);
+        }
+        return lenB;
+    }
+};
+
 long sum(struct SysNumber *number, int len)
 {
     long result = 0;
@@ -618,6 +703,12 @@ long sum(struct SysNumber *number, int len)
     }
 
     return result;
+}
+
+void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner)
+{
+    int a = 0, b = 0'
+    menuChuyenHeDem(&a, &b);
 }
 
 //=================
@@ -653,7 +744,7 @@ int menuPhepToan()
     printf(" 5. Quay lai (<--)\n");
 
     do {
-    scanf("%d", &choose);
+        scanf("%d", &choose);
     } while (choose < 1 || choose > 5);
     return choose;
 }
@@ -665,7 +756,7 @@ void menuChonHeso(int *a, int *b, int *c)
     printf("\n 2. Bat phan");
     printf("\n 3. Thap phan");
     printf("\n 4. Thap luc phan");
-    printf("\n Chon he so cho a, b, c cach nhau khoang trang (c = a [+-*/] b): ");
+    printf("\n Chon he so cho a, b, c cach nhau khoang trang (c = a [+-*/] b):\n");
 
     do {
         scanf("%d%d%d", &aa, &bb, &cc);
@@ -676,3 +767,27 @@ void menuChonHeso(int *a, int *b, int *c)
     *b = bb;
     *c = mapSysVal[cc-1];
 }
+
+void menuChuyenHeDem(int *input, int *output)
+{
+    int aa, bb;
+    printf("\n 1. Nhi phan");
+    printf("\n 2. Bat phan");
+    printf("\n 3. Thap phan");
+    printf("\n 4. Thap luc phan");
+
+    do {
+        printf("\n Chon he so can chuyen: ");
+        scanf("%d", &aa);
+    } while (aa<1 || aa>4);
+    do {
+        printf("\n Chon he so ket qua: ");
+        scanf("%d", &bb);
+    } while (bb<1 || bb>4);
+
+    int mapSysVal[4] = {BINARY, OCTA, DECIMAL, HEX};
+    *a = aa;
+    *b = mapSysVal[bb-1];
+}
+
+
