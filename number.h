@@ -78,5 +78,5 @@ void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner);
 int menu1();
 int menuPhepToan();
 void menuChonHeso(int *a, int *b, int *c);
-void menuChuyenHeDem(int *input, int *output);
+void menuChuyenHeDem(int *position, int *radix);
 

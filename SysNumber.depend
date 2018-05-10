@@ -14,3 +14,18 @@
 1525939074 source:d:\workspace\sysnumber\number.c
 	"number.h"
 
+1525961780 source:d:\workspace\basicc\main.c
+	"number.h"
+
+1525972431 d:\workspace\basicc\number.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<ctype.h>
+	<stdbool.h>
+	<conio.h>
+
+1525974158 source:d:\workspace\basicc\number.c
+	"number.h"
+

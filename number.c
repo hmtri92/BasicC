@@ -168,9 +168,9 @@ struct SysNumber _createOctaNumber(long decVal)
 {
     struct SysNumber number = createOctaNumber();
     long valOcta = convertDecimalToOctal(decVal);
-    char *octa = (char*) malloc(countDigits(valOcta) + 1);
-    ltoa(valOcta, octa, OCTA);
-    setValue(&number, octa);
+    char *strVal = (char*) malloc(countDigits(valOcta) + 1);
+    ltoa(decVal, strVal, OCTA);
+    setValue(&number, strVal);
 
     return number;
 };
@@ -186,9 +186,9 @@ struct SysNumber createDecNumber()
 struct SysNumber _createDecNumber(long decVal)
 {
     struct SysNumber number = createDecNumber();
-    char *octa = (char*) malloc(countDigits(decVal) + 1);
-    ltoa(decVal, octa, DECIMAL);
-    setValue(&number, octa);
+    char *strVal = (char*) malloc(countDigits(decVal) + 1);
+    ltoa(decVal, strVal, DECIMAL);
+    setValue(&number, strVal);
 
     return number;
 };
@@ -204,8 +204,8 @@ struct SysNumber createHexNumber()
 struct SysNumber _createHexNumber(long decVal)
 {
     struct SysNumber number = createHexNumber();
-    char *octa = convertDectoHex(decVal);
-    setValue(&number, octa);
+    char *strVal = convertDectoHex(decVal);
+    setValue(&number, strVal);
 
     return number;
 };
@@ -464,75 +464,6 @@ void xuatDay(struct SysNumber *arrNumber, int len)
     }
 }
 
-// Nhap 4 day nhi phan, bat phan, thap phan, thap luc phan
-// return: kich thuoc day
-int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber)
-{
-  int len;
-  do {
-    printf("Nhap so luong phan tu < %d: ", MAX_LEN);
-    scanf("%d", &len);
-  } while(len > MAX_LEN);
-
-  printf("Nhap day nhi phan(ket thuc moi ky tu bang phim Enter)\n");
-  nhapDay(binNumber, len, createBinaryNumber);
-
-  printf("Nhap day bat phan(ket thuc moi ky tu bang phim Enter)\n");
-  nhapDay(octNumber, len, createOctaNumber);
-
-  printf("Nhap day thap(ket thuc moi ky tu bang phim Enter)\n");
-  nhapDay(decNumber, len, createDecNumber);
-
-  printf("Nhap day thap luc phan(ket thuc moi ky tu bang phim Enter)\n");
-  nhapDay(hexNumber, len, createHexNumber);
-
-  return len;
-}
-
-void putAll(struct SysNumber *number[], int lenOuter, int lenIner)
-{
-    printf("\nXuat ta ca day so");
-    for (int out = 0; out < lenOuter; out++)
-    {
-        xuatDay(number[out], lenIner);
-    }
-}
-
-void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
-{
-    int pheptoan, a = 0, b = 0, c = 0;
-    struct SysNumber resultNum;
-    struct SysNumber arrMath[lenIner];
-    int lenResult = 0;
-
-    pheptoan = menuPhepToan();
-    menuChonHeso(&a, &b, &c);
-
-    // math
-    switch (pheptoan)
-    {
-    case 1:
-        // +
-        lenResult = arrPlus(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
-        break;
-    case 2:
-        // -
-        lenResult = arrSub(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
-        break;
-    case 3:
-        // *
-        lenResult = arrMulti(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
-        break;
-    case 4:
-        // /
-        lenResult = arrDivi(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
-        break;
-    };
-
-    printf("\nKet qua phep toan: ");
-    xuatDay(arrMath, lenResult);
-}
-
 struct SysNumber plus(struct SysNumber numberA, struct SysNumber numberB, int radixResult)
 {
     struct SysNumber result;
@@ -705,10 +636,88 @@ long sum(struct SysNumber *number, int len)
     return result;
 }
 
+// Nhap 4 day nhi phan, bat phan, thap phan, thap luc phan
+// return: kich thuoc day
+int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber)
+{
+  int len;
+  do {
+    printf("Nhap so luong phan tu < %d: ", MAX_LEN);
+    scanf("%d", &len);
+  } while(len > MAX_LEN);
+
+  printf("Nhap day nhi phan(ket thuc moi ky tu bang phim Enter)\n");
+  nhapDay(binNumber, len, createBinaryNumber);
+
+  printf("Nhap day bat phan(ket thuc moi ky tu bang phim Enter)\n");
+  nhapDay(octNumber, len, createOctaNumber);
+
+  printf("Nhap day thap(ket thuc moi ky tu bang phim Enter)\n");
+  nhapDay(decNumber, len, createDecNumber);
+
+  printf("Nhap day thap luc phan(ket thuc moi ky tu bang phim Enter)\n");
+  nhapDay(hexNumber, len, createHexNumber);
+
+  return len;
+}
+
+void putAll(struct SysNumber *number[], int lenOuter, int lenIner)
+{
+    printf("\nXuat ta ca day so");
+    for (int out = 0; out < lenOuter; out++)
+    {
+        xuatDay(number[out], lenIner);
+    }
+}
+
+void phepToan(struct SysNumber *number[], int lenOuter, int lenIner)
+{
+    int pheptoan, a = 0, b = 0, c = 0;
+    struct SysNumber resultNum;
+    struct SysNumber arrMath[lenIner];
+    int lenResult = 0;
+
+    pheptoan = menuPhepToan();
+    menuChonHeso(&a, &b, &c);
+
+    // math
+    switch (pheptoan)
+    {
+    case 1:
+        // +
+        lenResult = arrPlus(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
+        break;
+    case 2:
+        // -
+        lenResult = arrSub(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
+        break;
+    case 3:
+        // *
+        lenResult = arrMulti(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
+        break;
+    case 4:
+        // /
+        lenResult = arrDivi(number[a-1], lenIner, number[b-1], lenIner, arrMath, c);
+        break;
+    };
+
+    printf("\nKet qua phep toan: ");
+    xuatDay(arrMath, lenResult);
+}
+
 void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner)
 {
-    int a = 0, b = 0'
-    menuChuyenHeDem(&a, &b);
+    int position = 0, radix = 0;
+    menuChuyenHeDem(&position, &radix);
+    struct SysNumber *choseArr = number[position-1];
+
+    struct SysNumber arrResult[lenIner];
+    for (int i = 0; i < lenIner; i++)
+    {
+        arrResult[i] = convertSysNumber(choseArr[i], radix);
+    }
+
+    xuatDay(arrResult, lenIner);
 }
 
 //=================
@@ -768,7 +777,7 @@ void menuChonHeso(int *a, int *b, int *c)
     *c = mapSysVal[cc-1];
 }
 
-void menuChuyenHeDem(int *input, int *output)
+void menuChuyenHeDem(int *position, int *radix)
 {
     int aa, bb;
     printf("\n 1. Nhi phan");
@@ -781,13 +790,13 @@ void menuChuyenHeDem(int *input, int *output)
         scanf("%d", &aa);
     } while (aa<1 || aa>4);
     do {
-        printf("\n Chon he so ket qua: ");
+        printf("Chon he so ket qua: ");
         scanf("%d", &bb);
     } while (bb<1 || bb>4);
 
     int mapSysVal[4] = {BINARY, OCTA, DECIMAL, HEX};
-    *a = aa;
-    *b = mapSysVal[bb-1];
+    *position = aa;
+    *radix = mapSysVal[bb-1];
 }
 
 
