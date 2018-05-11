@@ -1,6 +1,17 @@
 #include "number.h"
 
 int main(void) {
+
+/*
+    long n;
+    scanf("%d", &n);
+    if (checkPerfectNumber(n) == true) {
+        printf("\nTrue");
+    } else {
+        printf("\nFalse");
+    }
+*/
+
     char state;
     int len, chose;
     struct SysNumber binNumber[MAX_LEN], octNumber[MAX_LEN], decNumber[MAX_LEN], hexNumber[MAX_LEN];
@@ -44,12 +55,17 @@ int main(void) {
             chuyenDoiHeSo(arrOut, 4, len);
             break;
         case 5:
+            arrOut[0] = binNumber;
+            arrOut[1] = octNumber;
+            arrOut[2] = decNumber;
+            arrOut[3] = hexNumber;
+            trungBinhCong_hoanHao(arrOut, 4, len);
             break;
         };
 
-        printf("\n-------------------");
+        printf("\n------------------------");
         printf("\nPress ESC to STOP.\nPress any key to continue.");
-        printf("\n-------------------\n");
+        printf("\n------------------------\n");
         fflush(stdin);
         state = getch();
     } while (state != ESC);
@@ -58,6 +74,7 @@ int main(void) {
     deleteSysNumbers(octNumber, len);
     deleteSysNumbers(decNumber, len);
     deleteSysNumbers(hexNumber, len);
+
 
     return 0;
 }

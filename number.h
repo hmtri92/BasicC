@@ -30,6 +30,7 @@ bool isBinary(char *number);
 bool isOcta(char *number);
 bool isDec(char *number);
 bool isHex(char *number);
+char* zero_justify(char *value);
 void deleteSysNumber(struct SysNumber number);
 void deleteSysNumbers(struct SysNumber *number, int len);
 void setDataType(struct SysNumber *number, int type);
@@ -69,14 +70,20 @@ int arrMulti(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB,
 struct SysNumber divi(struct SysNumber numberA, struct SysNumber numberB, int radixResult);
 int arrDivi(struct SysNumber *arrA, int lenA, struct SysNumber *arrB, int lenB, struct SysNumber *arrC, int radixResult);
 long sum(struct SysNumber *number, int len);
+long average(struct SysNumber *number, int len);
+bool checkPerfectSysNumber(struct SysNumber number);
+bool checkPerfectNumber(long number);
+bool isPrime(long number);
 
 int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber);
 void putAll(struct SysNumber *number[], int lenOuter, int lenIner);
 void phepToan(struct SysNumber *number[], int lenOuter, int lenIner);
 void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner);
+void trungBinhCong_hoanHao(struct SysNumber *number[], int lenOuter, int lenIner);
 
 int menu1();
 int menuPhepToan();
 void menuChonHeso(int *a, int *b, int *c);
 void menuChuyenHeDem(int *position, int *radix);
+void menuTrungBinhCong(int *position, int *radix);
 

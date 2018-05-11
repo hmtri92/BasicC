@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1525919436 source:d:\workspace\sysnumber\main.c
+1526015514 source:d:\workspace\sysnumber\main.c
 	"number.h"
 
-1525939101 d:\workspace\sysnumber\number.h
+1526021886 d:\workspace\sysnumber\number.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
@@ -11,7 +11,7 @@
 	<stdbool.h>
 	<conio.h>
 
-1525939074 source:d:\workspace\sysnumber\number.c
+1526015458 source:d:\workspace\sysnumber\number.c
 	"number.h"
 
 1525961780 source:d:\workspace\basicc\main.c

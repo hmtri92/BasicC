@@ -18,6 +18,7 @@ bool getSysNumber(struct SysNumber *number)
   } else if (length <= 0) {
       return false;
   }
+  zero_justify(value);
 
   // check data input
   bool status = false;
@@ -118,6 +119,23 @@ bool isHex(char *number)
   }
 
   return true;
+}
+
+char* zero_justify(char *value)
+{
+    strrev(value);
+    int len = strlen(value);
+    while (--len >= 0)
+    {
+        if (value[len] != '0')
+        {
+            break;
+        }
+    }
+
+	value[++len] = '\0';
+
+	return strrev(value);
 }
 
 void deleteSysNumber(struct SysNumber number)
@@ -443,16 +461,16 @@ void xuatDay(struct SysNumber *arrNumber, int len)
     switch (arrNumber[0].dataType)
     {
     case BINARY:
-        printf("\nDay nhi phan\n");
+        printf("\nDay nhi phan: ");
         break;
     case OCTA:
-        printf("\nDay bat phan\n");
+        printf("\nDay bat phan: ");
         break;
     case DECIMAL:
-        printf("\nDay thap phan\n");
+        printf("\nDay thap phan: ");
         break;
     case HEX:
-        printf("\nDay thap luc phan\n");
+        printf("\nDay thap luc phan: ");
         break;
     }
     for (int index = 0; index < len; index++)
@@ -636,6 +654,60 @@ long sum(struct SysNumber *number, int len)
     return result;
 }
 
+long average(struct SysNumber *number, int len)
+{
+    return sum(number, len) / len;
+}
+
+bool checkPerfectSysNumber(struct SysNumber number)
+{
+    long decVal = getDecValue(number);
+    return checkPerfectNumber(decVal);
+}
+
+// number = pow(2, n-1) * (pow(2, n) - 1);
+// Dieu kien: (pow(2, n) - 1) so nguyen to
+bool checkPerfectNumber(long number)
+{
+    int n = 2;
+    long currentNumber = 0;
+    long perfectNumber = 0;
+
+    while (currentNumber < number)
+    {
+        long prime = (pow(2, n) - 1);
+        currentNumber = pow(2, n-1) * prime;
+        if (isPrime(prime) == true)
+        {
+            perfectNumber = currentNumber;
+        }
+        n++;
+    }
+
+    if (perfectNumber == number)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isPrime(long number)
+{
+    long max = sqrt(number);
+    int i = 2;
+    while (i <= max)
+    {
+        if (number%i == 0)
+        {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
+
+//-------------------------------------------------
+
 // Nhap 4 day nhi phan, bat phan, thap phan, thap luc phan
 // return: kich thuoc day
 int getAll(struct SysNumber *binNumber, struct SysNumber *octNumber, struct SysNumber *decNumber, struct SysNumber *hexNumber)
@@ -720,6 +792,38 @@ void chuyenDoiHeSo(struct SysNumber *number[], int lenOuter, int lenIner)
     xuatDay(arrResult, lenIner);
 }
 
+void trungBinhCong_hoanHao(struct SysNumber *number[], int lenOuter, int lenIner)
+{
+    int position = 0, radix = 0;
+    menuTrungBinhCong(&position, &radix);
+    struct SysNumber *choseArr = number[position-1];
+
+    // Average
+    long averageVal = average(choseArr, lenIner);
+    struct SysNumber sysNum = createSysNumFactory(averageVal, radix);
+    printf("\nTrung binh cong day he %d(ket qua he %d): ", radix, radix);
+    putSysNumber(sysNum);
+    // end Average
+
+    // Perfect number
+    struct SysNumber arrPerfect[lenIner];
+    int perfIndex = 0;
+    for (int i = 0; i < lenIner; i++)
+    {
+        if (checkPerfectSysNumber(choseArr[i]) == true)
+        {
+            arrPerfect[perfIndex++] = choseArr[i];
+        }
+    }
+    if (perfIndex > 0) {
+        printf("\nSo hoan hao trong day: ");
+        xuatDay(arrPerfect, perfIndex);
+    } else {
+        printf("\nKhong co so hoan hao trong day.");
+    }
+
+}
+
 //=================
 
 int menu1()
@@ -798,5 +902,25 @@ void menuChuyenHeDem(int *position, int *radix)
     *position = aa;
     *radix = mapSysVal[bb-1];
 }
+
+void menuTrungBinhCong(int *position, int *radix)
+{
+    int aa;
+    printf("\n 1. Nhi phan");
+    printf("\n 2. Bat phan");
+    printf("\n 3. Thap phan");
+    printf("\n 4. Thap luc phan");
+
+    do {
+        printf("\n Chon he so: ");
+        scanf("%d", &aa);
+    } while (aa<1 || aa>4);
+
+    int mapSysVal[4] = {BINARY, OCTA, DECIMAL, HEX};
+    *position = aa;
+    *radix = mapSysVal[aa-1];
+}
+
+
 
 
