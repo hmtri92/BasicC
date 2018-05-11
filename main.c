@@ -1,17 +1,6 @@
 #include "number.h"
 
 int main(void) {
-
-/*
-    long n;
-    scanf("%d", &n);
-    if (checkPerfectNumber(n) == true) {
-        printf("\nTrue");
-    } else {
-        printf("\nFalse");
-    }
-*/
-
     char state;
     int len, chose;
     struct SysNumber binNumber[MAX_LEN], octNumber[MAX_LEN], decNumber[MAX_LEN], hexNumber[MAX_LEN];
