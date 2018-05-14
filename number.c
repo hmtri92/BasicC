@@ -168,8 +168,12 @@ struct SysNumber createBinaryNumber()
 struct SysNumber _createBinaryNumber(long decVal)
 {
     struct SysNumber number = createBinaryNumber();
-    char *binary = convertDecimalToBinary(decVal);
-    setValue(&number, binary);
+    if (decVal < 0) {
+        setValue(&number, "-1");
+    } else {
+        char *binary = convertDecimalToBinary(decVal);
+        setValue(&number, binary);
+    }
 
     return number;
 };
@@ -185,10 +189,15 @@ struct SysNumber createOctaNumber()
 struct SysNumber _createOctaNumber(long decVal)
 {
     struct SysNumber number = createOctaNumber();
-    long valOcta = convertDecimalToOctal(decVal);
-    char *strVal = (char*) malloc(countDigits(valOcta) + 1);
-    ltoa(decVal, strVal, OCTA);
-    setValue(&number, strVal);
+    if (decVal < 0)
+    {
+        setValue(&number, "-1");
+    } else {
+        long valOcta = convertDecimalToOctal(decVal);
+        char *strVal = (char*) malloc(countDigits(valOcta) + 1);
+        ltoa(decVal, strVal, OCTA);
+        setValue(&number, strVal);
+    }
 
     return number;
 };
@@ -204,9 +213,13 @@ struct SysNumber createDecNumber()
 struct SysNumber _createDecNumber(long decVal)
 {
     struct SysNumber number = createDecNumber();
-    char *strVal = (char*) malloc(countDigits(decVal) + 1);
-    ltoa(decVal, strVal, DECIMAL);
-    setValue(&number, strVal);
+    if (decVal < 0){
+        setValue(&number, "-1");
+    } else {
+        char *strVal = (char*) malloc(countDigits(decVal) + 1);
+        ltoa(decVal, strVal, DECIMAL);
+        setValue(&number, strVal);
+    }
 
     return number;
 };
@@ -222,8 +235,12 @@ struct SysNumber createHexNumber()
 struct SysNumber _createHexNumber(long decVal)
 {
     struct SysNumber number = createHexNumber();
-    char *strVal = convertDectoHex(decVal);
-    setValue(&number, strVal);
+    if (decVal < 0) {
+        setValue(&number, "-1");
+    } else {
+        char *strVal = convertDectoHex(decVal);
+        setValue(&number, strVal);
+    }
 
     return number;
 };

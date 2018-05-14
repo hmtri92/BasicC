@@ -14,10 +14,10 @@
 1526015458 source:d:\workspace\sysnumber\number.c
 	"number.h"
 
-1525961780 source:d:\workspace\basicc\main.c
+1526304189 source:d:\workspace\basicc\main.c
 	"number.h"
 
-1525972431 d:\workspace\basicc\number.h
+1526304189 d:\workspace\basicc\number.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
